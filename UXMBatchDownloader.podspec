@@ -9,34 +9,20 @@
 Pod::Spec.new do |s|
   s.name             = 'UXMBatchDownloader'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of UXMBatchDownloader.'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
+  s.summary          = 'Easily download massive numbers of files.'
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+UXMBatchDownloader simplies the arduous task of handling hundreds of file downloads concurrently without worrying about timeouts.
                        DESC
 
-  s.homepage         = 'https://github.com/<GITHUB_USERNAME>/UXMBatchDownloader'
+  s.homepage         = 'https://github.com/uxmstudio/UXMBatchDownloader'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'Chris Anderson' => 'hi@chrisanderson.io' }
-  s.source           = { :git => 'https://github.com/<GITHUB_USERNAME>/UXMBatchDownloader.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.author           = { 'Chris Anderson' => 'chris@uxmstudio.com' }
+  s.source           = { :git => 'https://github.com/uxmstudio/UXMBatchDownloader.git', :tag => s.version.to_s }
 
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'UXMBatchDownloader/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'UXMBatchDownloader' => ['UXMBatchDownloader/Assets/*.png']
-  # }
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
 end

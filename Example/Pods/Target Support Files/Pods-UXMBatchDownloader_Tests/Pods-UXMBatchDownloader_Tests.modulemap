@@ -1,0 +1,6 @@
+framework module Pods_UXMBatchDownloader_Tests {
+  umbrella header "Pods-UXMBatchDownloader_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

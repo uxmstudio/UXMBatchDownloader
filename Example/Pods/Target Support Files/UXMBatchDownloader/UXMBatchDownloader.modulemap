@@ -1,0 +1,6 @@
+framework module UXMBatchDownloader {
+  umbrella header "UXMBatchDownloader-umbrella.h"
+
+  export *
+  module * { export * }
+}
