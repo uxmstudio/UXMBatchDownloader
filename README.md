@@ -1,6 +1,5 @@
-# UXMBatchDownloader
+![UXM Token Field](https://uxmstudio.com/public/images/uxmbatchdownloader.png)
 
-[![CI Status](http://img.shields.io/travis/Chris Anderson/UXMBatchDownloader.svg?style=flat)](https://travis-ci.org/Chris Anderson/UXMBatchDownloader)
 [![Version](https://img.shields.io/cocoapods/v/UXMBatchDownloader.svg?style=flat)](http://cocoapods.org/pods/UXMBatchDownloader)
 [![License](https://img.shields.io/cocoapods/l/UXMBatchDownloader.svg?style=flat)](http://cocoapods.org/pods/UXMBatchDownloader)
 [![Platform](https://img.shields.io/cocoapods/p/UXMBatchDownloader.svg?style=flat)](http://cocoapods.org/pods/UXMBatchDownloader)
@@ -17,7 +16,7 @@ pod "UXMBatchDownloader"
 ```
 
 # Usage
-## Start download
+## Simple example
 ```swift
 let urls = [ "image_url_1" : "file1.jpg", "image_url_2" : "file2.jpg" ]
 
@@ -28,6 +27,7 @@ downloader.progress = { (file, progress) in
 }
 downloader.start()
 ```
+URL's can be passed with or without a destination path. If no destination paths are passed, files will simply be downloaded to the documents folder with their original name.
 
 ## Interface
 ```swift

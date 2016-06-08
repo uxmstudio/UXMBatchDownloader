@@ -40,6 +40,7 @@
 		607FACE51AFB9204008FA782 /* UXMBatchDownloader_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UXMBatchDownloader_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
+		611BF2C01D08B6D300F863A4 /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
 		7A3E2CB45633E9551FA91F32 /* Pods-UXMBatchDownloader_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UXMBatchDownloader_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-UXMBatchDownloader_Example/Pods-UXMBatchDownloader_Example.release.xcconfig"; sourceTree = "<group>"; };
 		9924918004D0C9E39EB9ED21 /* Pods_UXMBatchDownloader_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UXMBatchDownloader_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B48847B171660A12F7F77767 /* Pods_UXMBatchDownloader_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UXMBatchDownloader_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -146,6 +147,7 @@
 				5FE7ECED18A824B66F5325A0 /* UXMBatchDownloader.podspec */,
 				F9123630CA1E23C06DBB43ED /* README.md */,
 				5BC9B1BFC5625DB455E250D6 /* LICENSE */,
+				611BF2C01D08B6D300F863A4 /* Package.swift */,
 			);
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
