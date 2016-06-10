@@ -31,8 +31,6 @@ public class UXMBatchDownloader: NSObject {
         self.queue = NSOperationQueue()
         
         super.init()
-        
-        self.setupCompletion()
     }
     
     /// Returns a downloader with the list of urls being
@@ -48,8 +46,6 @@ public class UXMBatchDownloader: NSObject {
         for url in urls {
             self.addUrl(url)
         }
-        
-        self.setupCompletion()
     }
     
     /// Returns a downloader with the list of urls being
@@ -64,8 +60,6 @@ public class UXMBatchDownloader: NSObject {
         for (url, destination) in urlsWithDestinations {
             self.addUrl(url, destination: destination)
         }
-        
-        self.setupCompletion()
     }
     
     /// Returns a downloader with the list of urls being
@@ -93,22 +87,21 @@ public class UXMBatchDownloader: NSObject {
         self.completion = completion
     }
     
-    private func setupCompletion() {
-        
-        self.operationQueueCompletion = NSBlockOperation(block: {
-            self.completion?(urls: self.successfulUrls)
-        })
-        self.queue.addOperation(operationQueueCompletion)
-    }
-    
     /// Begin downloading the files
     public func start() {
         
         self.isRunning = true
         self.step = 0
+        
+        self.operationQueueCompletion = NSBlockOperation(block: {
+            self.completion?(urls: self.successfulUrls)
+        })
+
         for (url, destination) in urls {
             self.download(url, destination: destination)
         }
+    
+        self.queue.addOperation(operationQueueCompletion)
     }
     
     /// Add a single url to the downloader. If running already, 

@@ -44,6 +44,9 @@ class ViewController: UIViewController {
             self.progressBar.progress = progress
             self.tableView.reloadData()
         }
+        downloader.completion = { (urls) in
+            print("Completed")
+        }
         downloader.start()
     }
     
