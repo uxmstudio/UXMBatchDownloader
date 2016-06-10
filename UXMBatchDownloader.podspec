@@ -8,11 +8,11 @@
 
 Pod::Spec.new do |s|
   s.name             = 'UXMBatchDownloader'
-  s.version          = '0.1.1'
+  s.version          = '0.1.2'
   s.summary          = 'Easily download massive numbers of files.'
 
   s.description      = <<-DESC
-UXMBatchDownloader simplies the arduous task of handling hundreds of file downloads concurrently without worrying about timeouts.
+UXMBatchDownloader simplifies the arduous task of handling hundreds of file downloads concurrently without worrying about timeouts.
                        DESC
 
   s.homepage         = 'https://github.com/uxmstudio/UXMBatchDownloader'

@@ -36,11 +36,9 @@ class ViewController: UIViewController {
             "https://images.unsplash.com/photo-1458400411386-5ae465c4e57e?format=auto&auto=compress&dpr=2&crop=entropy&fit=crop&w=1440&h=848&q=80": "file10.jpg",
             "https://images.unsplash.com/photo-1452827073306-6e6e661baf57?format=auto&auto=compress&dpr=2&crop=entropy&fit=crop&w=1440&h=1080&q=80": "file11.jpg"
         ]
-        
         let downloader = UXMBatchDownloader(urlsWithDestinations: urls)
         downloader.maximumConcurrentDownloads = 5
-        downloader.progress = { (file, progress) in
-            
+        downloader.progress = { (file, error, progress) in
             print("Finished Step \(progress) : \(file)")
             self.downloads.append(file)
             self.progressBar.progress = progress
