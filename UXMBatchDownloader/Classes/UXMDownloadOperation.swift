@@ -36,7 +36,7 @@ class UXMDownloadOperation: UXMConcurrentOperation {
                 let filename = self.getDocumentsDirectory().stringByAppendingPathComponent(self.destination)
                 data.writeToFile(filename, atomically: true)
                 
-                var url = NSURL(fileURLWithPath: filename)
+                let url = NSURL(fileURLWithPath: filename)
                 try! url.setResourceValue(!self.object.backupToCloud,
                                           forKey: NSURLIsExcludedFromBackupKey)
             }

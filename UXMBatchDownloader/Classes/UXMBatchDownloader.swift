@@ -120,8 +120,7 @@ public class UXMBatchDownloader: NSObject {
     ///
     /// - Parameter urls: A URL to be downloaded
     public func addUrl(url: String) {
-        var obj = UXMBatchObject(url: url, destination: nil)
-        self.addUrl(obj)
+        self.addUrl(UXMBatchObject(url: url, destination: nil))
     }
     
     /// Add a single url to the downloader. If running already,
