@@ -18,9 +18,9 @@ pod "UXMBatchDownloader"
 # Usage
 ## Simple example
 ```swift
-let urls = [ "image_url_1" : "file1.jpg", "image_url_2" : "file2.jpg" ]
+let urls = [ "image_url_1", "image_url_2" ]
 
-let downloader = UXMBatchDownloader(urlsWithDestinations: urls)
+let downloader = UXMBatchDownloader(urls: urls)
 downloader.maximumConcurrentDownloads = 5
 downloader.progress = { (file, progress) in
     print("Finished Step \(progress) : \(file)")
@@ -37,13 +37,14 @@ var progress:((file: String, progress: Float) -> ())?
 
 init(urls: [String])
 init(urls: [String], completion: ((urls: [String]) -> ())?)
-init(urlsWithDestinations: [String : String])
-init(urlsWithDestinations: [String : String], completion: ((urls: [String]) -> ())?)
+init(objects: [UXMBatchObject])
+init(objects: [UXMBatchObject], completion: ((urls: [String]) -> ())?)
 
 func start()
 
 func addUrl(url: String)
-func addUrl(url: String, destination: String?)
+func addUrl(object: UXMBatchObject)
+func addUrls(objects: [UXMBatchObject])
 
 ```
 

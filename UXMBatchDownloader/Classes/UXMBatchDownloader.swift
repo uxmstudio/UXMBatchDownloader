@@ -8,6 +8,18 @@
 
 import Foundation
 
+public class UXMBatchObject {
+    
+    var url:String
+    var destination:String?
+    var backupToCloud:Bool = false
+    
+    public init(url: String, destination: String?) {
+        self.url = url
+        self.destination = destination
+    }
+}
+
 public class UXMBatchDownloader: NSObject {
     
     public var maximumConcurrentDownloads:Int = 2 {
@@ -18,7 +30,7 @@ public class UXMBatchDownloader: NSObject {
     public var completion:((urls: [String]) -> ())?
     public var progress:((file: String, error: NSError?, progress: Float) -> ())?
     
-    private var urls:[String:String?] = [:]
+    private var urls:[UXMBatchObject] = []
     private var successfulUrls:[String] = []
     private var queue = NSOperationQueue()
     private var step = 0
@@ -51,14 +63,13 @@ public class UXMBatchDownloader: NSObject {
     /// Returns a downloader with the list of urls being
     /// downloaded using their existing file names
     ///
-    /// - Parameter urlsWithDestinations: List of string URL's to be downloaded
-    ///     with their corresponding filename to be saved as
-    public init(urlsWithDestinations: [String : String]) {
+    /// - Parameter objects: List of batch objects to be downloaded
+    public init(objects: [UXMBatchObject]) {
 
         super.init()
         
-        for (url, destination) in urlsWithDestinations {
-            self.addUrl(url, destination: destination)
+        for object in objects {
+            self.addUrl(object)
         }
     }
     
@@ -77,13 +88,12 @@ public class UXMBatchDownloader: NSObject {
     /// Returns a downloader with the list of urls being
     /// downloaded using their existing file names
     ///
-    /// - Parameter urlsWithDestinations: List of string URL's to be downloaded
-    ///     with their corresponding filename to be saved as
+    /// - Parameter objects: List of batch objects to be downloaded
     /// - Parameter completion: A block to be called at finish with a list of
     ///     successfully downloaded urls
-    public convenience init(urlsWithDestinations: [String : String], completion: ((urls: [String]) -> ())?) {
+    public convenience init(objects: [UXMBatchObject], completion: ((urls: [String]) -> ())?) {
         
-        self.init(urlsWithDestinations: urlsWithDestinations)
+        self.init(objects: objects)
         self.completion = completion
     }
     
@@ -97,8 +107,8 @@ public class UXMBatchDownloader: NSObject {
             self.completion?(urls: self.successfulUrls)
         })
 
-        for (url, destination) in urls {
-            self.download(url, destination: destination)
+        for object in urls {
+            self.download(object)
         }
     
         self.queue.addOperation(operationQueueCompletion)
@@ -110,19 +120,29 @@ public class UXMBatchDownloader: NSObject {
     ///
     /// - Parameter urls: A URL to be downloaded
     public func addUrl(url: String) {
-        self.addUrl(url, destination: nil)
+        var obj = UXMBatchObject(url: url, destination: nil)
+        self.addUrl(obj)
     }
     
     /// Add a single url to the downloader. If running already,
     ///     will beginning download, else just add to queue.
-    ///     File will be downloaded using existing name.
+    ///     File will be downloaded to the provided name.
     ///
-    /// - Parameter url: A URL to be downloaded
-    /// - Parameter url: A name or path to save the file in the documents folder in
-    public func addUrl(url: String, destination: String?) {
-        self.urls[url] = destination
+    /// - Parameter object: A batch object to be downloaded
+    public func addUrl(object: UXMBatchObject) {
+        self.urls.append(object)
         if isRunning {
-            self.download(url, destination: destination)
+            self.download(object)
+        }
+    }
+    
+    /// Add a group of url to the downloader. If running already,
+    ///     files will beginning download, else just add to queue.
+    ///
+    /// - Parameter objects: Array of batch objects to be downloaded
+    public func addUrls(objects: [UXMBatchObject]) {
+        for object in urls {
+            self.addUrl(object)
         }
     }
     
@@ -131,13 +151,9 @@ public class UXMBatchDownloader: NSObject {
         queue.cancelAllOperations()
     }
     
-    private func download(url: String) {
-        self.download(url, destination: nil)
-    }
-    
-    private func download(url: String, destination: String?) {
+    private func download(object: UXMBatchObject) {
 
-        let operation = UXMDownloadOperation(url: url, destination: destination) { (url, destination, data, error) in
+        let operation = UXMDownloadOperation(object: object) { (url, destination, data, error) in
             
             /// Always increment step
             self.step += 1

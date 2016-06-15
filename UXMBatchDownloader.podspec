@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'UXMBatchDownloader'
-  s.version          = '0.1.3'
+  s.version          = '0.1.4'
   s.summary          = 'Easily download massive numbers of files.'
 
   s.description      = <<-DESC
