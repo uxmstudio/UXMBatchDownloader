@@ -10,13 +10,14 @@ import Foundation
 
 public class UXMBatchObject {
     
-    var url:String
-    var destination:String?
-    var backupToCloud:Bool = false
+    public var url:String
+    public var destination:String?
+    public var backupToCloud:Bool = false
     
-    public init(url: String, destination: String?) {
+    public init(url: String, destination: String?, backupToCloud: Bool = false) {
         self.url = url
         self.destination = destination
+        self.backupToCloud = backupToCloud
     }
 }
 
@@ -140,7 +141,7 @@ public class UXMBatchDownloader: NSObject {
     ///
     /// - Parameter objects: Array of batch objects to be downloaded
     public func addUrls(objects: [UXMBatchObject]) {
-        for object in urls {
+        for object in objects {
             self.addUrl(object)
         }
     }
