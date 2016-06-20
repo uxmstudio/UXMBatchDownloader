@@ -149,6 +149,7 @@ public class UXMBatchDownloader: NSObject {
     /// Stop downloading and cancel all pending operations
     public func cancel() {
         queue.cancelAllOperations()
+        self.urls.removeAll()
     }
     
     private func download(object: UXMBatchObject) {
