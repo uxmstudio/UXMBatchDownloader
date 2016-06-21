@@ -53,7 +53,7 @@ public class UXMBatchDownloader: NSObject {
     public init(urls: [String]) {
         
         self.queue = NSOperationQueue()
-
+        
         super.init()
         
         for url in urls {
@@ -66,7 +66,7 @@ public class UXMBatchDownloader: NSObject {
     ///
     /// - Parameter objects: List of batch objects to be downloaded
     public init(objects: [UXMBatchObject]) {
-
+        
         super.init()
         
         for object in objects {
@@ -78,7 +78,7 @@ public class UXMBatchDownloader: NSObject {
     /// downloaded using their existing file names
     ///
     /// - Parameter urls: List of string URL's to be downloaded
-    /// - Parameter completion: A block to be called at finish with a list of 
+    /// - Parameter completion: A block to be called at finish with a list of
     ///     successfully downloaded urls
     public convenience init(urls: [String], completion: ((urls: [String]) -> ())?) {
         
@@ -105,17 +105,19 @@ public class UXMBatchDownloader: NSObject {
         self.step = 0
         
         self.operationQueueCompletion = NSBlockOperation(block: {
-            self.completion?(urls: self.successfulUrls)
+            NSOperationQueue.mainQueue().addOperationWithBlock() {
+                self.completion?(urls: self.successfulUrls)
+            }
         })
-
+        
         for object in urls {
             self.download(object)
         }
-    
+        
         self.queue.addOperation(operationQueueCompletion)
     }
     
-    /// Add a single url to the downloader. If running already, 
+    /// Add a single url to the downloader. If running already,
     ///     will beginning download, else just add to queue.
     ///     File will be downloaded using existing name.
     ///
@@ -153,7 +155,7 @@ public class UXMBatchDownloader: NSObject {
     }
     
     private func download(object: UXMBatchObject) {
-
+        
         let operation = UXMDownloadOperation(object: object) { (url, destination, data, error) in
             
             /// Always increment step

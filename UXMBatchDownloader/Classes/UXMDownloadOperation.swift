@@ -57,5 +57,4 @@ class UXMDownloadOperation: UXMConcurrentOperation {
         let documentsDirectory = paths[0]
         return documentsDirectory
     }
-
 }
