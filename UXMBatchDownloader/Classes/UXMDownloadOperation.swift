@@ -53,7 +53,7 @@ class UXMDownloadOperation: UXMConcurrentOperation {
                                           forKey: NSURLIsExcludedFromBackupKey)
             }
             
-            if let error = error where self.numberOfRetries > 0 {
+            if let _ = error where self.numberOfRetries > 0 {
                 self.retry()
             }
             else {
