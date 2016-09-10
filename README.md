@@ -48,6 +48,17 @@ func addUrls(objects: [UXMBatchObject])
 
 ```
 
+## Batch Object
+Instead of passing in just a URL's, batch objects (UXMBatchObject) can be passed that contain a url, destination url, as well as options for number of download retries and whether or not the file should be backed up to iCloud.
+```swift
+var url:String
+var destination:String?
+var backupToCloud:Bool = false
+var numberOfRetries:Int = 0
+
+init(url: String, destination: String?, backupToCloud: Bool = false, numberOfRetries: Int = 0)
+```
+
 
 # Author
 Chris Anderson:

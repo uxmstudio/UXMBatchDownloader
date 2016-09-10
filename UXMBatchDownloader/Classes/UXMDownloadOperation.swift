@@ -12,18 +12,30 @@ class UXMDownloadOperation: UXMConcurrentOperation {
     
     var object: UXMBatchObject
     var destination: String
-    let networkOperationCompletionHandler: (url: String, destination: String, data: NSData?, error: NSError?) -> ()
+    var networkOperationCompletionHandler: (url: String, destination: String, data: NSData?, error: NSError?) -> ()
+    var numberOfRetries:Int = 0
     
     weak var task:NSURLSessionTask?
     
-    init(object: UXMBatchObject, networkOperationCompletionHandler: (url: String, destination: String, data: NSData?, error: NSError?) -> ()) {
+    init(object: UXMBatchObject, numberOfRetries:Int = 0, networkOperationCompletionHandler: (url: String, destination: String, data: NSData?, error: NSError?) -> ()) {
         self.object = object
         self.destination = object.destination ?? (object.url as NSString).lastPathComponent
         self.networkOperationCompletionHandler = networkOperationCompletionHandler
+        self.numberOfRetries = numberOfRetries
         super.init()
     }
     
     override func main() {
+        
+        self.startRequest()
+    }
+    
+    override func cancel() {
+        task?.cancel()
+        super.cancel()
+    }
+    
+    func startRequest() {
         
         let sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
         let session = NSURLSession(configuration: sessionConfig, delegate: nil, delegateQueue: nil)
@@ -41,15 +53,27 @@ class UXMDownloadOperation: UXMConcurrentOperation {
                                           forKey: NSURLIsExcludedFromBackupKey)
             }
             
-            self.networkOperationCompletionHandler(url: self.object.url, destination: self.destination, data: data, error: error)
-            self.completeOperation()
+            if let error = error where self.numberOfRetries > 0 {
+                self.retry()
+            }
+            else {
+                
+                self.networkOperationCompletionHandler(
+                    url: self.object.url,
+                    destination: self.destination,
+                    data: data,
+                    error: error
+                )
+                self.completeOperation()
+            }
         }
         task?.resume()
     }
     
-    override func cancel() {
-        task?.cancel()
-        super.cancel()
+    func retry() {
+        
+        self.numberOfRetries -= 1
+        self.startRequest()
     }
     
     func getDocumentsDirectory() -> NSString {

@@ -13,11 +13,13 @@ public class UXMBatchObject {
     public var url:String
     public var destination:String?
     public var backupToCloud:Bool = false
+    public var numberOfRetries:Int = 0
     
-    public init(url: String, destination: String?, backupToCloud: Bool = false) {
+    public init(url: String, destination: String?, backupToCloud: Bool = false, numberOfRetries: Int = 0) {
         self.url = url
         self.destination = destination
         self.backupToCloud = backupToCloud
+        self.numberOfRetries = numberOfRetries
     }
 }
 
@@ -156,7 +158,7 @@ public class UXMBatchDownloader: NSObject {
     
     private func download(object: UXMBatchObject) {
         
-        let operation = UXMDownloadOperation(object: object) { (url, destination, data, error) in
+        let operation = UXMDownloadOperation(object: object, numberOfRetries: object.numberOfRetries) { (url, destination, data, error) in
             
             /// Always increment step
             self.step += 1
