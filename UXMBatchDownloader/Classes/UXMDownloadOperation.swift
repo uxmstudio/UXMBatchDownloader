@@ -12,12 +12,12 @@ class UXMDownloadOperation: UXMConcurrentOperation {
     
     var object: UXMBatchObject
     var destination: String
-    var networkOperationCompletionHandler: (url: String, destination: String, data: NSData?, error: NSError?) -> ()
-    var numberOfRetries:Int = 0
+    var networkOperationCompletionHandler: (_ url: String, _ destination: String, _ data: Data?, _ error: Error?) -> ()
+    var numberOfRetries: Int = 0
     
-    weak var task:NSURLSessionTask?
+    weak var task:URLSessionTask?
     
-    init(object: UXMBatchObject, numberOfRetries:Int = 0, networkOperationCompletionHandler: (url: String, destination: String, data: NSData?, error: NSError?) -> ()) {
+    init(object: UXMBatchObject, numberOfRetries:Int = 0, networkOperationCompletionHandler: @escaping (_ url: String, _ destination: String, _ data: Data?, _ error: Error?) -> ()) {
         self.object = object
         self.destination = object.destination ?? (object.url as NSString).lastPathComponent
         self.networkOperationCompletionHandler = networkOperationCompletionHandler
@@ -37,36 +37,36 @@ class UXMDownloadOperation: UXMConcurrentOperation {
     
     func startRequest() {
         
-        let sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
-        let session = NSURLSession(configuration: sessionConfig, delegate: nil, delegateQueue: nil)
-        let request = NSMutableURLRequest(URL: NSURL(string: object.url)!)
-        request.HTTPMethod = "GET"
-        
-        self.task = session.dataTaskWithRequest(request) { (data, response, error) in
+        let sessionConfig = URLSessionConfiguration.default
+        let session = URLSession(configuration: sessionConfig, delegate: nil, delegateQueue: nil)
+        var request = URLRequest(url: URL(string: object.url)!)
+        request.httpMethod = "GET"
+ 
+        self.task = session.dataTask(with: request, completionHandler: { (data, response, error) in
             
             if let data = data {
-                let filename = self.getDocumentsDirectory().stringByAppendingPathComponent(self.destination)
-                data.writeToFile(filename, atomically: true)
+                let filename = self.getDocumentsDirectory().appendingPathComponent(self.destination)
+                try? data.write(to: URL(fileURLWithPath: filename), options: [.atomic])
                 
-                let url = NSURL(fileURLWithPath: filename)
-                try! url.setResourceValue(!self.object.backupToCloud,
-                                          forKey: NSURLIsExcludedFromBackupKey)
+                let url = URL(fileURLWithPath: filename)
+                try! (url as NSURL).setResourceValue(!self.object.backupToCloud,
+                                          forKey: URLResourceKey.isExcludedFromBackupKey)
             }
             
-            if let _ = error where self.numberOfRetries > 0 {
+            if let _ = error, self.numberOfRetries > 0 {
                 self.retry()
             }
             else {
                 
                 self.networkOperationCompletionHandler(
-                    url: self.object.url,
-                    destination: self.destination,
-                    data: data,
-                    error: error
+                    self.object.url,
+                    self.destination,
+                    data,
+                    error
                 )
                 self.completeOperation()
             }
-        }
+        }) 
         task?.resume()
     }
     
@@ -77,8 +77,8 @@ class UXMDownloadOperation: UXMConcurrentOperation {
     }
     
     func getDocumentsDirectory() -> NSString {
-        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         let documentsDirectory = paths[0]
-        return documentsDirectory
+        return documentsDirectory as NSString
     }
 }

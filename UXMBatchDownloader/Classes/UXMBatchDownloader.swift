@@ -8,12 +8,12 @@
 
 import Foundation
 
-public class UXMBatchObject {
+open class UXMBatchObject {
     
-    public var url:String
-    public var destination:String?
-    public var backupToCloud:Bool = false
-    public var numberOfRetries:Int = 0
+    open var url: String
+    open var destination: String?
+    open var backupToCloud: Bool = false
+    open var numberOfRetries: Int = 0
     
     public init(url: String, destination: String?, backupToCloud: Bool = false, numberOfRetries: Int = 0) {
         self.url = url
@@ -23,27 +23,27 @@ public class UXMBatchObject {
     }
 }
 
-public class UXMBatchDownloader: NSObject {
+open class UXMBatchDownloader: NSObject {
     
-    public var maximumConcurrentDownloads:Int = 2 {
+    open var maximumConcurrentDownloads: Int = 2 {
         didSet {
             self.queue.maxConcurrentOperationCount = self.maximumConcurrentDownloads
         }
     }
-    public var completion:((urls: [String]) -> ())?
-    public var progress:((file: String, error: NSError?, progress: Float) -> ())?
+    open var completion: ((_ urls: [String]) -> ())?
+    open var progress: ((_ file: String, _ error: Error?, _ progress: Float) -> ())?
     
-    private var urls:[UXMBatchObject] = []
-    private var successfulUrls:[String] = []
-    private var queue = NSOperationQueue()
-    private var step = 0
-    private var isRunning = false
-    private var operationQueueCompletion:NSBlockOperation!
+    fileprivate var urls: [UXMBatchObject] = []
+    fileprivate var successfulUrls: [String] = []
+    fileprivate var queue = OperationQueue()
+    fileprivate var step = 0
+    fileprivate var isRunning = false
+    fileprivate var operationQueueCompletion:BlockOperation!
     
     /// Returns a downloader to begin having files added to
     public override init() {
         
-        self.queue = NSOperationQueue()
+        self.queue = OperationQueue()
         
         super.init()
     }
@@ -54,7 +54,7 @@ public class UXMBatchDownloader: NSObject {
     /// - Parameter urls: List of string URL's to be downloaded
     public init(urls: [String]) {
         
-        self.queue = NSOperationQueue()
+        self.queue = OperationQueue()
         
         super.init()
         
@@ -82,7 +82,7 @@ public class UXMBatchDownloader: NSObject {
     /// - Parameter urls: List of string URL's to be downloaded
     /// - Parameter completion: A block to be called at finish with a list of
     ///     successfully downloaded urls
-    public convenience init(urls: [String], completion: ((urls: [String]) -> ())?) {
+    public convenience init(urls: [String], completion: ((_ urls: [String]) -> ())?) {
         
         self.init(urls: urls)
         self.completion = completion
@@ -94,21 +94,21 @@ public class UXMBatchDownloader: NSObject {
     /// - Parameter objects: List of batch objects to be downloaded
     /// - Parameter completion: A block to be called at finish with a list of
     ///     successfully downloaded urls
-    public convenience init(objects: [UXMBatchObject], completion: ((urls: [String]) -> ())?) {
+    public convenience init(objects: [UXMBatchObject], completion: ((_ urls: [String]) -> ())?) {
         
         self.init(objects: objects)
         self.completion = completion
     }
     
     /// Begin downloading the files
-    public func start() {
+    open func start() {
         
         self.isRunning = true
         self.step = 0
         
-        self.operationQueueCompletion = NSBlockOperation(block: {
-            NSOperationQueue.mainQueue().addOperationWithBlock() {
-                self.completion?(urls: self.successfulUrls)
+        self.operationQueueCompletion = BlockOperation(block: {
+            OperationQueue.main.addOperation() {
+                self.completion?(self.successfulUrls)
             }
         })
         
@@ -124,7 +124,7 @@ public class UXMBatchDownloader: NSObject {
     ///     File will be downloaded using existing name.
     ///
     /// - Parameter urls: A URL to be downloaded
-    public func addUrl(url: String) {
+    open func addUrl(_ url: String) {
         self.addUrl(UXMBatchObject(url: url, destination: nil))
     }
     
@@ -133,7 +133,7 @@ public class UXMBatchDownloader: NSObject {
     ///     File will be downloaded to the provided name.
     ///
     /// - Parameter object: A batch object to be downloaded
-    public func addUrl(object: UXMBatchObject) {
+    open func addUrl(_ object: UXMBatchObject) {
         self.urls.append(object)
         if isRunning {
             self.download(object)
@@ -144,19 +144,19 @@ public class UXMBatchDownloader: NSObject {
     ///     files will beginning download, else just add to queue.
     ///
     /// - Parameter objects: Array of batch objects to be downloaded
-    public func addUrls(objects: [UXMBatchObject]) {
+    open func addUrls(_ objects: [UXMBatchObject]) {
         for object in objects {
             self.addUrl(object)
         }
     }
     
     /// Stop downloading and cancel all pending operations
-    public func cancel() {
+    open func cancel() {
         queue.cancelAllOperations()
         self.urls.removeAll()
     }
     
-    private func download(object: UXMBatchObject) {
+    fileprivate func download(_ object: UXMBatchObject) {
         
         let operation = UXMDownloadOperation(object: object, numberOfRetries: object.numberOfRetries) { (url, destination, data, error) in
             
@@ -169,8 +169,8 @@ public class UXMBatchDownloader: NSObject {
             }
             
             /// Pass progress back on the main thread
-            NSOperationQueue.mainQueue().addOperationWithBlock() {
-                self.progress?(file: destination, error: error, progress: Float(self.step) / Float(self.urls.count))
+            OperationQueue.main.addOperation() {
+                self.progress?(destination, error, Float(self.step) / Float(self.urls.count))
             }
         }
         self.operationQueueCompletion.addDependency(operation)

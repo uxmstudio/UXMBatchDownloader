@@ -1,22 +1,22 @@
 PODS:
-  - Nimble (3.2.0)
-  - Quick (0.9.2)
-  - UXMBatchDownloader (0.1.0)
+  - Nimble (5.1.1)
+  - Quick (1.0.0)
+  - UXMBatchDownloader (0.1.7)
 
 DEPENDENCIES:
-  - Nimble (~> 3.0)
-  - Quick (~> 0.8)
+  - Nimble
+  - Quick
   - UXMBatchDownloader (from `../`)
 
 EXTERNAL SOURCES:
   UXMBatchDownloader:
-    :path: ../
+    :path: "../"
 
 SPEC CHECKSUMS:
-  Nimble: 703854335d181df169bbca9c97117b5cf8c47c1d
-  Quick: 18d057bc66451eedd5d1c8dc99ba2a5db6e60226
-  UXMBatchDownloader: 5ad0fc3f0bf0ecbdbd260147372139d891dbf420
+  Nimble: 415e3aa3267e7bc2c96b05fa814ddea7bb686a29
+  Quick: 8024e4a47e6cc03a9d5245ef0948264fc6d27cff
+  UXMBatchDownloader: 042bf4c19515ca0b769084f9f1b7594687d2809c
 
-PODFILE CHECKSUM: 4bf8e5c56671e06651dce20ef46ad16222a2799c
+PODFILE CHECKSUM: 7db735e61bb1f7dbdc463d30a50e585ec073f8b5
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.1

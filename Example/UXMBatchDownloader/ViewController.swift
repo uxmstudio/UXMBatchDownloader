@@ -20,7 +20,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         let urls = [
@@ -51,12 +51,12 @@ class ViewController: UIViewController {
         downloader.start()
     }
     
-    func image(name: String) -> UIImage? {
-        let nsDocumentDirectory = NSSearchPathDirectory.DocumentDirectory
-        let nsUserDomainMask = NSSearchPathDomainMask.UserDomainMask
+    func image(_ name: String) -> UIImage? {
+        let nsDocumentDirectory = FileManager.SearchPathDirectory.documentDirectory
+        let nsUserDomainMask = FileManager.SearchPathDomainMask.userDomainMask
         let paths = NSSearchPathForDirectoriesInDomains(nsDocumentDirectory, nsUserDomainMask, true)
         if paths.count > 0 {
-            let readPath = (paths[0] as NSString).stringByAppendingPathComponent(name)
+            let readPath = (paths[0] as NSString).appendingPathComponent(name)
             return UIImage(contentsOfFile: readPath)
         }
         return nil
@@ -69,17 +69,17 @@ extension ViewController: UITableViewDelegate {
 
 extension ViewController: UITableViewDataSource {
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.downloads.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("defaultCell", forIndexPath: indexPath) as! ViewControllerCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "defaultCell", for: indexPath) as! ViewControllerCell
         let imageName = self.downloads[indexPath.row]
         cell.pictureView.image = nil
         cell.pictureView.image = self.image(imageName)
