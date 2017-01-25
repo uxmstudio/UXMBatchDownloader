@@ -39,6 +39,10 @@ open class UXMBatchDownloader: NSObject {
     fileprivate var step = 0
     fileprivate var isRunning = false
     fileprivate var operationQueueCompletion:BlockOperation!
+    fileprivate var session: URLSession = {
+        let sessionConfig = URLSessionConfiguration.default
+        return URLSession(configuration: sessionConfig, delegate: nil, delegateQueue: nil)
+    }()
     
     /// Returns a downloader to begin having files added to
     public override init() {
@@ -158,20 +162,22 @@ open class UXMBatchDownloader: NSObject {
     
     fileprivate func download(_ object: UXMBatchObject) {
         
-        let operation = UXMDownloadOperation(object: object, numberOfRetries: object.numberOfRetries) { (url, destination, data, error) in
-            
-            /// Always increment step
-            self.step += 1
-            
-            /// If no error, add to list of urls successfully downloaded
-            if error == nil {
-                self.successfulUrls.append(url)
-            }
-            
-            /// Pass progress back on the main thread
-            OperationQueue.main.addOperation() {
-                self.progress?(destination, error, Float(self.step) / Float(self.urls.count))
-            }
+        let operation = UXMDownloadOperation(object: object,
+                                             numberOfRetries: object.numberOfRetries,
+                                             session: self.session) { (url, destination, data, error) in
+                                                
+                                                /// Always increment step
+                                                self.step += 1
+                                                
+                                                /// If no error, add to list of urls successfully downloaded
+                                                if error == nil {
+                                                    self.successfulUrls.append(url)
+                                                }
+                                                
+                                                /// Pass progress back on the main thread
+                                                OperationQueue.main.addOperation() {
+                                                    self.progress?(destination, error, Float(self.step) / Float(self.urls.count))
+                                                }
         }
         self.operationQueueCompletion.addDependency(operation)
         self.queue.addOperation(operation)

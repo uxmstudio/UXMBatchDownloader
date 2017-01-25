@@ -14,14 +14,20 @@ class UXMDownloadOperation: UXMConcurrentOperation {
     var destination: String
     var networkOperationCompletionHandler: (_ url: String, _ destination: String, _ data: Data?, _ error: Error?) -> ()
     var numberOfRetries: Int = 0
+    var session: URLSession?
     
-    weak var task:URLSessionTask?
+    weak var task: URLSessionTask?
     
-    init(object: UXMBatchObject, numberOfRetries:Int = 0, networkOperationCompletionHandler: @escaping (_ url: String, _ destination: String, _ data: Data?, _ error: Error?) -> ()) {
+    init(object: UXMBatchObject,
+         numberOfRetries: Int = 0,
+         session: URLSession? = nil,
+         networkOperationCompletionHandler: @escaping (_ url: String, _ destination: String, _ data: Data?, _ error: Error?) -> ()) {
         self.object = object
         self.destination = object.destination ?? (object.url as NSString).lastPathComponent
         self.networkOperationCompletionHandler = networkOperationCompletionHandler
         self.numberOfRetries = numberOfRetries
+        self.session = session
+        
         super.init()
     }
     
@@ -37,12 +43,22 @@ class UXMDownloadOperation: UXMConcurrentOperation {
     
     func startRequest() {
         
-        let sessionConfig = URLSessionConfiguration.default
-        let session = URLSession(configuration: sessionConfig, delegate: nil, delegateQueue: nil)
-        var request = URLRequest(url: URL(string: object.url)!)
+        if (session == nil) {
+            let sessionConfig = URLSessionConfiguration.default
+            self.session = URLSession(configuration: sessionConfig, delegate: nil, delegateQueue: nil)
+        }
+        
+        guard let url = URL(string: object.url) else {
+            
+            self.networkOperationCompletionHandler(self.object.url, self.destination, nil, nil)
+            self.completeOperation()
+            return
+        }
+        
+        var request = URLRequest(url: url)
         request.httpMethod = "GET"
- 
-        self.task = session.dataTask(with: request, completionHandler: { (data, response, error) in
+        
+        self.task = session!.dataTask(with: request, completionHandler: { (data, response, error) in
             
             if let data = data {
                 let filename = self.getDocumentsDirectory().appendingPathComponent(self.destination)
@@ -50,7 +66,7 @@ class UXMDownloadOperation: UXMConcurrentOperation {
                 
                 let url = URL(fileURLWithPath: filename)
                 try! (url as NSURL).setResourceValue(!self.object.backupToCloud,
-                                          forKey: URLResourceKey.isExcludedFromBackupKey)
+                                                     forKey: URLResourceKey.isExcludedFromBackupKey)
             }
             
             if let _ = error, self.numberOfRetries > 0 {
@@ -66,7 +82,7 @@ class UXMDownloadOperation: UXMConcurrentOperation {
                 )
                 self.completeOperation()
             }
-        }) 
+        })
         task?.resume()
     }
     
